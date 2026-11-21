@@ -20,9 +20,15 @@ describe('DurationUtils', () => {
       expect(DurationUtils.isISO8601('2025-01-32T12:00:00Z')).toBe(false);
     });
 
-    // Impossible calendar dates roll over in V8 instead of failing - NV-9074
-    it.skip('should reject invalid dates with correct format', () => {
+    it('should reject invalid calendar dates and out-of-range times (NV-9074)', () => {
       expect(DurationUtils.isISO8601('2025-02-30T12:00:00Z')).toBe(false);
+      expect(DurationUtils.isISO8601('2025-02-29T12:00:00Z')).toBe(false);
+      expect(DurationUtils.isISO8601('2025-04-31T00:00:00Z')).toBe(false);
+      expect(DurationUtils.isISO8601('2025-02-30T12:00:00')).toBe(false);
+      expect(DurationUtils.isISO8601('2025-01-01T24:00:00Z')).toBe(false);
+      expect(DurationUtils.isISO8601('2025-01-01T12:60:00Z')).toBe(false);
+      expect(DurationUtils.isISO8601('2024-02-29T12:00:00Z')).toBe(true);
+      expect(DurationUtils.isISO8601('2025-06-15T00:30:00')).toBe(true);
     });
   });
 
